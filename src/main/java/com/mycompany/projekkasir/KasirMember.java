@@ -26,6 +26,6 @@ public class KasirMember extends Kasir {
     public void tampilkanData() {
         super.tampilkanData();
         System.out.println("Jenis : Member Bulanan");
-        System.out.println("Status: Member Aktif");
+        System.out.println("Status: Member Aktif Aguuuuy");
     }
 }
