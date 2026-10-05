@@ -37,6 +37,11 @@ public class Kasir {
     public void prosesPembayaran(int jumlah) {
         totalTransaksi += jumlah;
     }
+    
+    public void prosesPembayaran(String metode){
+        totalTransaksi++;
+        System.out.println("Metode pembayaran: " + metode);
+    }
 
     public void tampilkanData() {
         System.out.println("Nama  : " + this.nama);
