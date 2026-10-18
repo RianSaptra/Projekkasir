@@ -8,10 +8,9 @@ package com.mycompany.projekkasir;
  *
  * @author RaynSaptra
  */
-public class Kasir {
+public abstract class Kasir {
     private String nama;
     protected double harga;
-
     protected static int totalTransaksi = 0;
 
     public Kasir(String nama) {
@@ -30,22 +29,24 @@ public class Kasir {
         return harga;
     }
 
+    public abstract String getJenisPembayaran();
+
     public void prosesPembayaran() {
         totalTransaksi++;
+        System.out.println("Pembayaran berhasil.");
     }
 
     public void prosesPembayaran(int jumlah) {
         totalTransaksi += jumlah;
-    }
-    
-    public void prosesPembayaran(String metode){
-        totalTransaksi++;
-        System.out.println("Metode pembayaran: " + metode);
+        System.out.println(
+            "Berhasil memproses " + jumlah + " transaksi."
+        );
     }
 
     public void tampilkanData() {
-        System.out.println("Nama  : " + this.nama);
-        System.out.println("Harga : Rp" + this.harga);
+        System.out.println("Nama  : " + nama);
+        System.out.println("Harga : Rp" + harga);
+        System.out.println("Jenis : " + getJenisPembayaran());
     }
 
     public static int getTotalTransaksi() {

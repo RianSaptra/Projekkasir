@@ -14,75 +14,114 @@ import java.util.Scanner;
 public class Projekkasir {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
-
         ArrayList<Kasir> daftarKasir = new ArrayList<>();
 
-        int jumlahMember = 0;
-        int jumlahHarian = 0;
-        double totalPendapatan = 0;
-
-        System.out.println("======================================");
-        System.out.println("          SISTEM KASIR GYM");
-        System.out.println("======================================");
-
-        System.out.print("Masukkan jumlah orang : ");
-        int jumlahOrang = input.nextInt();
-        input.nextLine();
-
-        for (int i = 1; i <= jumlahOrang; i++) {
-
-            System.out.println("\nOrang ke-" + i);
-
-            System.out.print("Nama : ");
-            String nama = input.nextLine();
-
-            System.out.println("Pilihan:");
-            System.out.println("1. Harian  - Rp20.000");
-            System.out.println("2. Member  - Rp150.000");
-            System.out.print("Pilih : ");
-            int pilihan = input.nextInt();
-            input.nextLine();
-
-            Kasir kasir;
-
-            if (pilihan == 1) {
-                kasir = new KasirHarian(nama);
-                jumlahHarian++;
-            } else if (pilihan == 2) {
-                kasir = new KasirMember(nama);
-                jumlahMember++;
-            } else {
-                System.out.println("Pilihan tidak tersedia.");
-                i--;
-                continue;
-            }
-
-            kasir.prosesPembayaran();
-            daftarKasir.add(kasir);
-
-            totalPendapatan += kasir.getHarga();
-
-            System.out.println("Pembayaran berhasil!");
-        }
-
-        System.out.println("\n======================================");
-        System.out.println("             DATA KASIR");
-        System.out.println("======================================");
+        daftarKasir.add(new KasirHarian("Andi"));
+        daftarKasir.add(new KasirMember("Budi"));
+        daftarKasir.add(new KasirHarian("Citra"));
+        daftarKasir.add(new KasirMember("Dina"));
 
         for (Kasir kasir : daftarKasir) {
-            kasir.tampilkanData();
-            System.out.println("--------------------------------------");
+            kasir.prosesPembayaran();
         }
 
-        System.out.println("Jumlah Member Bulanan : " + jumlahMember);
-        System.out.println("Jumlah Gym Harian     : " + jumlahHarian);
-        System.out.println("Total Orang           : "
-                + Kasir.getTotalTransaksi());
-        System.out.println("Total Pendapatan      : Rp"
-                + totalPendapatan);
+        int pilihan;
 
-        System.out.println("======================================");
+        do {
+            System.out.println("\n================================");
+            System.out.println("        SISTEM KASIR GYM");
+            System.out.println("================================");
+            System.out.println("1. Tampilkan semua data");
+            System.out.println("2. Tambah transaksi");
+            System.out.println("3. Keluar");
+            System.out.print("Pilih menu: ");
+
+            pilihan = input.nextInt();
+            input.nextLine();
+
+            switch (pilihan) {
+                case 1:
+                    System.out.println("\n======= DATA KASIR =======");
+
+                    for (Kasir kasir : daftarKasir) {
+                        kasir.tampilkanData();
+
+                        if (kasir instanceof Pembayaran) {
+                            Pembayaran pembayaran =
+                                    (Pembayaran) kasir;
+                            pembayaran.cetakBuktiPembayaran();
+                        }
+
+                        if (kasir instanceof Keanggotaan) {
+                            Keanggotaan keanggotaan =
+                                    (Keanggotaan) kasir;
+                            keanggotaan.cekStatusKeanggotaan();
+                        }
+
+                        System.out.println(
+                            "--------------------------------"
+                        );
+                    }
+
+                    System.out.println("Total transaksi: "
+                            + Kasir.getTotalTransaksi());
+
+                    System.out.println("Total pendapatan: Rp"
+                            + hitungPendapatan(daftarKasir));
+                    break;
+
+                case 2:
+                    System.out.print("Masukkan nama: ");
+                    String nama = input.nextLine();
+
+                    System.out.println("1. Gym Harian - Rp20.000");
+                    System.out.println("2. Member Bulanan - Rp150.000");
+                    System.out.print("Pilih jenis pembayaran: ");
+
+                    int jenis = input.nextInt();
+                    input.nextLine();
+
+                    Kasir kasirBaru;
+
+                    if (jenis == 1) {
+                        kasirBaru = new KasirHarian(nama);
+                    } else if (jenis == 2) {
+                        kasirBaru = new KasirMember(nama);
+                    } else {
+                        System.out.println("Pilihan tidak valid.");
+                        break;
+                    }
+
+                    kasirBaru.prosesPembayaran();
+                    daftarKasir.add(kasirBaru);
+
+                    System.out.println(
+                        "Transaksi berhasil ditambahkan!"
+                    );
+                    break;
+
+                case 3:
+                    System.out.println("Program kasir selesai.");
+                    break;
+
+                default:
+                    System.out.println("Menu tidak tersedia.");
+            }
+
+        } while (pilihan != 3);
 
         input.close();
+    }
+
+    public static double hitungPendapatan(
+            ArrayList<Kasir> daftarKasir) {
+
+        double total = 0;
+
+        for (Kasir kasir : daftarKasir) {
+            total += kasir.getHarga();
+        }
+
+        return total;
     }
 }

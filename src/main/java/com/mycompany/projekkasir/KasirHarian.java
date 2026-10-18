@@ -8,23 +8,32 @@ package com.mycompany.projekkasir;
  *
  * @author RaynSaptra
  */
-public class KasirHarian extends Kasir {
+public class KasirHarian extends Kasir implements Pembayaran {
+
     private static final double HARGA_HARIAN = 20000;
-    private int jumlahHarian;
 
     public KasirHarian(String nama) {
         super(nama);
         this.harga = HARGA_HARIAN;
-        this.jumlahHarian = 1;
     }
 
-    public int getJumlahHarian() {
-        return jumlahHarian;
+    @Override
+    public String getJenisPembayaran() {
+        System.out.println("Jenis pembayaran: Gym Harian");
+        return "Gym Harian";
     }
 
     @Override
     public void tampilkanData() {
         super.tampilkanData();
-        System.out.println("Jenis : Gym Harian");
+        System.out.println("Status: Tiket Harian Aktif");
+    }
+
+    @Override
+    public void cetakBuktiPembayaran() {
+        System.out.println(
+            "Bukti pembayaran harian untuk "
+            + getNama() + " sebesar Rp" + getHarga()
+        );
     }
 }
