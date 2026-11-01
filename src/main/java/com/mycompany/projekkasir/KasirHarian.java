@@ -12,8 +12,8 @@ public class KasirHarian extends Kasir implements Pembayaran {
 
     private static final double HARGA_HARIAN = 20000;
 
-    public KasirHarian(String nama) {
-        super(nama);
+    public KasirHarian(String id, String nama) {
+        super(id, nama);
         this.harga = HARGA_HARIAN;
     }
 

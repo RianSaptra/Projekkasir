@@ -14,8 +14,8 @@ public class KasirMember extends Kasir
 
     private static final double HARGA_MEMBER = 150000;
 
-    public KasirMember(String nama) {
-        super(nama);
+    public KasirMember(String id, String nama) {
+        super(id, nama);
         this.harga = HARGA_MEMBER;
     }
 

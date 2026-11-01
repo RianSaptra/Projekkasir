@@ -9,12 +9,18 @@ package com.mycompany.projekkasir;
  * @author RaynSaptra
  */
 public abstract class Kasir {
+    private String id;
     private String nama;
     protected double harga;
     protected static int totalTransaksi = 0;
 
-    public Kasir(String nama) {
+    public Kasir(String id, String nama) {
+        this.id= id;
         this.nama = nama;
+    }
+    
+    public String getId(){
+        return id;
     }
 
     public String getNama() {
@@ -44,6 +50,7 @@ public abstract class Kasir {
     }
 
     public void tampilkanData() {
+        System.out.println("ID    : " + id);
         System.out.println("Nama  : " + nama);
         System.out.println("Harga : Rp" + harga);
         System.out.println("Jenis : " + getJenisPembayaran());
