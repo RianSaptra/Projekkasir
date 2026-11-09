@@ -8,52 +8,62 @@ package com.mycompany.projekkasir;
  *
  * @author RaynSaptra
  */
-import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.InputMismatchException;
 
 public class Projekkasir {
+
     public static void main(String[] args) {
 
         Scanner input = new Scanner(System.in);
 
-        ArrayList<Kasir> daftarKasir = new ArrayList<>();
-        HashMap<String, Kasir> dataKasir = new HashMap<>();
+        SistemKasir sistem = new SistemKasir();
+        ProsesTransaksi proses = new ProsesTransaksi();
 
         try {
-            simpanTransaksi("G001", "Andi", 1,
-                    daftarKasir, dataKasir);
+            Pelanggan p1 = new Pelanggan("G001", "Andi");
+            Pelanggan p2 = new Pelanggan("G002", "Budi");
+            Pelanggan p3 = new Pelanggan("G003", "Citra");
+            Pelanggan p4 = new Pelanggan("G004", "Dina");
 
-            simpanTransaksi("G002", "Budi", 2,
-                    daftarKasir, dataKasir);
+            sistem.tambahPelanggan(p1);
+            sistem.tambahPelanggan(p2);
+            sistem.tambahPelanggan(p3);
+            sistem.tambahPelanggan(p4);
 
-            simpanTransaksi("G003", "Citra", 1,
-                    daftarKasir, dataKasir);
+            Kasir k1 = new KasirHarian("G001", "Andi");
+            Kasir k2 = new KasirMember("G002", "Budi");
+            Kasir k3 = new KasirHarian("G003", "Citra");
+            Kasir k4 = new KasirMember("G004", "Dina");
 
-            simpanTransaksi("G004", "Dina", 2,
-                    daftarKasir, dataKasir);
+            sistem.tambahTransaksi(k1);
+            sistem.tambahTransaksi(k2);
+            sistem.tambahTransaksi(k3);
+            sistem.tambahTransaksi(k4);
+
+            proses.prosesTransaksi(k1, p1);
+            proses.prosesTransaksi(k2, p2);
+            proses.prosesTransaksi(k3, p3);
+            proses.prosesTransaksi(k4, p4);
 
         } catch (DataTidakValidException e) {
-            System.out.println("Error data awal: " + e.getMessage());
-
-        } finally {
-            System.out.println("Inisialisasi data selesai.");
+            System.out.println("Error: " + e.getMessage());
         }
 
         int pilihan = 0;
 
         do {
-            System.out.println("\n================================");
-            System.out.println("         SISTEM KASIR GYM");
-            System.out.println("================================");
-            System.out.println("1. Tampilkan semua data transaksi");
+            System.out.println("\n==================================");
+            System.out.println("          SISTEM KASIR GYM");
+            System.out.println("==================================");
+            System.out.println("1. Tampilkan semua transaksi");
             System.out.println("2. Tambah transaksi");
             System.out.println("3. Cari pelanggan berdasarkan ID");
-            System.out.println("4. Tampilkan semua data HashMap");
-            System.out.println("5. Keluar");
-            System.out.println("================================");
+            System.out.println("4. Tampilkan daftar pelanggan");
+            System.out.println("5. Tampilkan fasilitas gym");
+            System.out.println("6. Tampilkan total pendapatan");
+            System.out.println("7. Keluar");
+            System.out.println("==================================");
 
             try {
                 System.out.print("Pilih menu: ");
@@ -62,20 +72,17 @@ public class Projekkasir {
 
             } catch (InputMismatchException e) {
                 System.out.println(
-                    "Error: Menu harus diisi dengan angka!"
+                    "Error: Pilihan harus berupa angka!"
                 );
 
                 input.nextLine();
                 pilihan = 0;
-
-            } finally {
-                System.out.println("Pemeriksaan input menu selesai.");
             }
 
             switch (pilihan) {
 
                 case 1:
-                    tampilkanSemuaData(daftarKasir);
+                    sistem.tampilkanDaftarTransaksi();
                     break;
 
                 case 2:
@@ -91,13 +98,35 @@ public class Projekkasir {
                         System.out.println("2. Member Bulanan - Rp150.000");
 
                         System.out.print("Pilih jenis pembayaran: ");
-
                         int jenis = input.nextInt();
                         input.nextLine();
 
-                        simpanTransaksi(
-                            id, nama, jenis,
-                            daftarKasir, dataKasir
+                        if (jenis != 1 && jenis != 2) {
+                            System.out.println(
+                                "Jenis pembayaran tidak valid!"
+                            );
+                            break;
+                        }
+
+                        Pelanggan pelangganBaru =
+                                new Pelanggan(id, nama);
+
+                        sistem.tambahPelanggan(pelangganBaru);
+
+                        Kasir kasirBaru;
+
+                        if (jenis == 1) {
+                            kasirBaru =
+                                    new KasirHarian(id, nama);
+                        } else {
+                            kasirBaru =
+                                    new KasirMember(id, nama);
+                        }
+
+                        sistem.tambahTransaksi(kasirBaru);
+
+                        proses.prosesTransaksi(
+                            kasirBaru, pelangganBaru
                         );
 
                         System.out.println(
@@ -106,9 +135,8 @@ public class Projekkasir {
 
                     } catch (InputMismatchException e) {
                         System.out.println(
-                            "Error: Jenis pembayaran harus berupa angka!"
+                            "Error: Input harus berupa angka!"
                         );
-
                         input.nextLine();
 
                     } catch (DataTidakValidException e) {
@@ -126,33 +154,45 @@ public class Projekkasir {
                 case 3:
                     try {
                         System.out.print(
-                            "Masukkan ID pelanggan yang dicari: "
+                            "Masukkan ID pelanggan: "
                         );
 
                         String idCari = input.nextLine();
 
-                        Kasir hasil = cariData(idCari, dataKasir);
+                        Pelanggan hasil =
+                                sistem.cariPelanggan(idCari);
 
                         System.out.println("\nData ditemukan:");
-                        hasil.tampilkanData();
+                        hasil.tampilkanPelanggan();
 
                     } catch (DataTidakValidException e) {
                         System.out.println(
-                            "Error pencarian: " + e.getMessage()
-                        );
-
-                    } finally {
-                        System.out.println(
-                            "Proses pencarian selesai."
+                            "Error: " + e.getMessage()
                         );
                     }
                     break;
 
                 case 4:
-                    tampilkanHashMap(dataKasir);
+                    sistem.tampilkanDaftarPelanggan();
                     break;
 
                 case 5:
+                    sistem.getFasilitas().tampilkanFasilitas();
+                    break;
+
+                case 6:
+                    System.out.println(
+                        "Jumlah transaksi: "
+                        + sistem.getJumlahTransaksi()
+                    );
+
+                    System.out.println(
+                        "Total pendapatan: Rp"
+                        + sistem.hitungPendapatan()
+                    );
+                    break;
+
+                case 7:
                     System.out.println(
                         "Program kasir gym selesai."
                     );
@@ -160,7 +200,7 @@ public class Projekkasir {
 
                 case 0:
                     System.out.println(
-                        "Silakan masukkan pilihan menu yang valid."
+                        "Silakan masukkan pilihan yang valid."
                     );
                     break;
 
@@ -170,154 +210,8 @@ public class Projekkasir {
                     );
             }
 
-        } while (pilihan != 5);
+        } while (pilihan != 7);
 
         input.close();
-    }
-
-    public static void simpanTransaksi(
-            String id,
-            String nama,
-            int jenis,
-            ArrayList<Kasir> daftarKasir,
-            HashMap<String, Kasir> dataKasir)
-            throws DataTidakValidException {
-
-        if (id.trim().isEmpty()) {
-            throw new DataTidakValidException(
-                "ID pelanggan tidak boleh kosong!"
-            );
-        }
-
-        if (nama.trim().isEmpty()) {
-            throw new DataTidakValidException(
-                "Nama pelanggan tidak boleh kosong!"
-            );
-        }
-
-        if (dataKasir.containsKey(id)) {
-            throw new DataTidakValidException(
-                "ID pelanggan sudah terdaftar!"
-            );
-        }
-
-        Kasir kasirBaru;
-
-        if (jenis == 1) {
-            kasirBaru = new KasirHarian(id, nama);
-
-        } else if (jenis == 2) {
-            kasirBaru = new KasirMember(id, nama);
-
-        } else {
-            throw new DataTidakValidException(
-                "Jenis pembayaran tidak valid!"
-            );
-        }
-
-        daftarKasir.add(kasirBaru);
-        dataKasir.put(id, kasirBaru);
-
-        kasirBaru.prosesPembayaran();
-    }
-
-    public static Kasir cariData(
-            String id,
-            HashMap<String, Kasir> dataKasir)
-            throws DataTidakValidException {
-
-        if (id.trim().isEmpty()) {
-            throw new DataTidakValidException(
-                "ID pencarian tidak boleh kosong!"
-            );
-        }
-
-        if (!dataKasir.containsKey(id)) {
-            throw new DataTidakValidException(
-                "Data pelanggan dengan ID " + id
-                + " tidak ditemukan!"
-            );
-        }
-
-        return dataKasir.get(id);
-    }
-
-    public static void tampilkanSemuaData(
-            ArrayList<Kasir> daftarKasir) {
-
-        if (daftarKasir.isEmpty()) {
-            System.out.println("Belum ada data transaksi.");
-            return;
-        }
-
-        System.out.println("\n======= DAFTAR TRANSAKSI =======");
-
-        for (Kasir kasir : daftarKasir) {
-
-            kasir.tampilkanData();
-
-            if (kasir instanceof Pembayaran) {
-                Pembayaran pembayaran = (Pembayaran) kasir;
-                pembayaran.cetakBuktiPembayaran();
-            }
-
-            if (kasir instanceof Keanggotaan) {
-                Keanggotaan keanggotaan = (Keanggotaan) kasir;
-                keanggotaan.cekStatusKeanggotaan();
-            }
-
-            System.out.println("--------------------------------");
-        }
-
-        System.out.println("Jumlah transaksi: "
-                + daftarKasir.size());
-
-        System.out.println("Total pendapatan: Rp"
-                + hitungPendapatan(daftarKasir));
-    }
-
-    public static void tampilkanHashMap(
-            HashMap<String, Kasir> dataKasir) {
-
-        if (dataKasir.isEmpty()) {
-            System.out.println("HashMap masih kosong.");
-            return;
-        }
-
-        System.out.println("\n======= DATA HASHMAP =======");
-
-        for (Map.Entry<String, Kasir> data
-                : dataKasir.entrySet()) {
-
-            System.out.println("Key (ID): " + data.getKey());
-            System.out.println(
-                "Value (Nama): " + data.getValue().getNama()
-            );
-
-            System.out.println(
-                "Jenis: " + data.getValue().getJenisPembayaran()
-            );
-
-            System.out.println(
-                "Harga: Rp" + data.getValue().getHarga()
-            );
-
-            System.out.println("--------------------------------");
-        }
-
-        System.out.println("Jumlah data HashMap: "
-                + dataKasir.size());
-    }
-
-    public static double hitungPendapatan(
-            ArrayList<Kasir> daftarKasir) {
-
-        double total = 0;
-
-        for (Kasir kasir : daftarKasir) {
-            total += kasir.getHarga();
-        }
-
-        return total;
     }
 }

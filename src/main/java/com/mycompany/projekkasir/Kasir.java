@@ -9,17 +9,18 @@ package com.mycompany.projekkasir;
  * @author RaynSaptra
  */
 public abstract class Kasir {
+
     private String id;
     private String nama;
     protected double harga;
     protected static int totalTransaksi = 0;
 
     public Kasir(String id, String nama) {
-        this.id= id;
+        this.id = id;
         this.nama = nama;
     }
-    
-    public String getId(){
+
+    public String getId() {
         return id;
     }
 
