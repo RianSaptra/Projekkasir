@@ -8,9 +8,12 @@ package com.mycompany.projekkasir;
  *
  * @author RaynSaptra
  */
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Fasilitas {
+public class Fasilitas implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String namaGym;
     private ArrayList<String> daftarFasilitas;
@@ -24,7 +27,9 @@ public class Fasilitas {
         daftarFasilitas.add("Kamar Mandi");
         daftarFasilitas.add("Area Kardio");
 
-        System.out.println("Komponen fasilitas gym berhasil dibuat.");
+        System.out.println(
+            "Komponen fasilitas gym berhasil dibuat."
+        );
     }
 
     public void tampilkanFasilitas() {

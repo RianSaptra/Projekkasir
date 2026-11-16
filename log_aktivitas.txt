@@ -1,0 +1,15 @@
+Pelanggan ditambahkan: G001 - Andi
+Pelanggan ditambahkan: G002 - Budi
+Pelanggan ditambahkan: G003 - Citra
+Pelanggan ditambahkan: G004 - Dina
+Transaksi: G001 - Andi - Gym Harian - Rp20000.0
+Transaksi: G002 - Budi - Member Bulanan - Rp150000.0
+Transaksi: G003 - Citra - Gym Harian - Rp20000.0
+Transaksi: G004 - Dina - Member Bulanan - Rp150000.0
+Data sistem kasir berhasil disimpan.
+Data sistem kasir berhasil dimuat.
+Data sistem kasir berhasil dimuat.
+Data sistem kasir berhasil disimpan.
+Data sistem kasir berhasil disimpan.
+Program kasir gym ditutup.
+Data sistem kasir berhasil dimuat.

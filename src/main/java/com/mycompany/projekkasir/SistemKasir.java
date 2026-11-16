@@ -1,18 +1,21 @@
+
 package com.mycompany.projekkasir;
 
 /**
  *
  * @author RaynSaptra
  */
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SistemKasir {
+public class SistemKasir implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private ArrayList<Kasir> daftarKasir;
     private HashMap<String, Pelanggan> dataPelanggan;
-
     private Fasilitas fasilitas;
 
     public SistemKasir() {
@@ -21,7 +24,9 @@ public class SistemKasir {
 
         fasilitas = new Fasilitas("Gym Sehat");
 
-        System.out.println("Sistem kasir berhasil dibuat.");
+        System.out.println(
+            "Sistem kasir berhasil dibuat."
+        );
     }
 
     public void tambahPelanggan(Pelanggan pelanggan)
@@ -52,6 +57,12 @@ public class SistemKasir {
 
         System.out.println(
             "Pelanggan berhasil dimasukkan ke sistem."
+        );
+
+        LogAktivitas.catatLog(
+            "Pelanggan ditambahkan: "
+            + pelanggan.getId() + " - "
+            + pelanggan.getNama()
         );
     }
 
@@ -84,10 +95,23 @@ public class SistemKasir {
         System.out.println(
             "Transaksi berhasil disimpan ke ArrayList."
         );
+
+        LogAktivitas.catatLog(
+            "Transaksi: " + kasir.getId()
+            + " - " + kasir.getNama()
+            + " - " + kasir.getJenisPembayaran()
+            + " - Rp" + kasir.getHarga()
+        );
     }
 
     public Pelanggan cariPelanggan(String id)
             throws DataTidakValidException {
+
+        if (id == null || id.trim().isEmpty()) {
+            throw new DataTidakValidException(
+                "ID pencarian tidak boleh kosong!"
+            );
+        }
 
         if (!dataPelanggan.containsKey(id)) {
             throw new DataTidakValidException(

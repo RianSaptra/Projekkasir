@@ -13,41 +13,51 @@ import java.util.InputMismatchException;
 
 public class Projekkasir {
 
-    public static void main(String[] args) {
+    public static void m1ain(String[] args) {
 
         Scanner input = new Scanner(System.in);
 
-        SistemKasir sistem = new SistemKasir();
-        ProsesTransaksi proses = new ProsesTransaksi();
+        SistemKasir sistem = PenyimpananData.muatData();
 
-        try {
-            Pelanggan p1 = new Pelanggan("G001", "Andi");
-            Pelanggan p2 = new Pelanggan("G002", "Budi");
-            Pelanggan p3 = new Pelanggan("G003", "Citra");
-            Pelanggan p4 = new Pelanggan("G004", "Dina");
+        if (sistem == null) {
 
-            sistem.tambahPelanggan(p1);
-            sistem.tambahPelanggan(p2);
-            sistem.tambahPelanggan(p3);
-            sistem.tambahPelanggan(p4);
+            sistem = new SistemKasir();
 
-            Kasir k1 = new KasirHarian("G001", "Andi");
-            Kasir k2 = new KasirMember("G002", "Budi");
-            Kasir k3 = new KasirHarian("G003", "Citra");
-            Kasir k4 = new KasirMember("G004", "Dina");
+            try {
+                Pelanggan p1 = new Pelanggan("G001", "Andi");
+                Pelanggan p2 = new Pelanggan("G002", "Budi");
+                Pelanggan p3 = new Pelanggan("G003", "Citra");
+                Pelanggan p4 = new Pelanggan("G004", "Dina");
 
-            sistem.tambahTransaksi(k1);
-            sistem.tambahTransaksi(k2);
-            sistem.tambahTransaksi(k3);
-            sistem.tambahTransaksi(k4);
+                sistem.tambahPelanggan(p1);
+                sistem.tambahPelanggan(p2);
+                sistem.tambahPelanggan(p3);
+                sistem.tambahPelanggan(p4);
 
-            proses.prosesTransaksi(k1, p1);
-            proses.prosesTransaksi(k2, p2);
-            proses.prosesTransaksi(k3, p3);
-            proses.prosesTransaksi(k4, p4);
+                Kasir k1 = new KasirHarian("G001", "Andi");
+                Kasir k2 = new KasirMember("G002", "Budi");
+                Kasir k3 = new KasirHarian("G003", "Citra");
+                Kasir k4 = new KasirMember("G004", "Dina");
 
-        } catch (DataTidakValidException e) {
-            System.out.println("Error: " + e.getMessage());
+                sistem.tambahTransaksi(k1);
+                sistem.tambahTransaksi(k2);
+                sistem.tambahTransaksi(k3);
+                sistem.tambahTransaksi(k4);
+
+                ProsesTransaksi proses = new ProsesTransaksi();
+
+                proses.prosesTransaksi(k1, p1);
+                proses.prosesTransaksi(k2, p2);
+                proses.prosesTransaksi(k3, p3);
+                proses.prosesTransaksi(k4, p4);
+
+                PenyimpananData.simpanData(sistem);
+
+            } catch (DataTidakValidException e) {
+                System.out.println(
+                    "Error data awal: " + e.getMessage()
+                );
+            }
         }
 
         int pilihan = 0;
@@ -61,8 +71,10 @@ public class Projekkasir {
             System.out.println("3. Cari pelanggan berdasarkan ID");
             System.out.println("4. Tampilkan daftar pelanggan");
             System.out.println("5. Tampilkan fasilitas gym");
-            System.out.println("6. Tampilkan total pendapatan");
-            System.out.println("7. Keluar");
+            System.out.println("6. Simpan data");
+            System.out.println("7. Muat data");
+            System.out.println("8. Tampilkan log aktivitas");
+            System.out.println("9. Keluar");
             System.out.println("==================================");
 
             try {
@@ -111,8 +123,6 @@ public class Projekkasir {
                         Pelanggan pelangganBaru =
                                 new Pelanggan(id, nama);
 
-                        sistem.tambahPelanggan(pelangganBaru);
-
                         Kasir kasirBaru;
 
                         if (jenis == 1) {
@@ -123,11 +133,17 @@ public class Projekkasir {
                                     new KasirMember(id, nama);
                         }
 
+                        sistem.tambahPelanggan(pelangganBaru);
                         sistem.tambahTransaksi(kasirBaru);
+
+                        ProsesTransaksi proses =
+                                new ProsesTransaksi();
 
                         proses.prosesTransaksi(
                             kasirBaru, pelangganBaru
                         );
+
+                        PenyimpananData.simpanData(sistem);
 
                         System.out.println(
                             "Transaksi berhasil ditambahkan!"
@@ -135,7 +151,7 @@ public class Projekkasir {
 
                     } catch (InputMismatchException e) {
                         System.out.println(
-                            "Error: Input harus berupa angka!"
+                            "Error: Input jenis pembayaran harus berupa angka!"
                         );
                         input.nextLine();
 
@@ -165,9 +181,18 @@ public class Projekkasir {
                         System.out.println("\nData ditemukan:");
                         hasil.tampilkanPelanggan();
 
+                        LogAktivitas.catatLog(
+                            "Pencarian pelanggan: " + idCari
+                            + " berhasil."
+                        );
+
                     } catch (DataTidakValidException e) {
                         System.out.println(
                             "Error: " + e.getMessage()
+                        );
+
+                        LogAktivitas.catatLog(
+                            "Pencarian pelanggan gagal."
                         );
                     }
                     break;
@@ -181,18 +206,37 @@ public class Projekkasir {
                     break;
 
                 case 6:
-                    System.out.println(
-                        "Jumlah transaksi: "
-                        + sistem.getJumlahTransaksi()
-                    );
-
-                    System.out.println(
-                        "Total pendapatan: Rp"
-                        + sistem.hitungPendapatan()
-                    );
+                    PenyimpananData.simpanData(sistem);
                     break;
 
                 case 7:
+                    SistemKasir dataMuat =
+                            PenyimpananData.muatData();
+
+                    if (dataMuat != null) {
+                        sistem = dataMuat;
+
+                        System.out.println(
+                            "Data berhasil diterapkan ke program."
+                        );
+                    } else {
+                        System.out.println(
+                            "Data tidak berubah karena pemuatan gagal."
+                        );
+                    }
+                    break;
+
+                case 8:
+                    LogAktivitas.tampilkanLog();
+                    break;
+
+                case 9:
+                    PenyimpananData.simpanData(sistem);
+
+                    LogAktivitas.catatLog(
+                        "Program kasir gym ditutup."
+                    );
+
                     System.out.println(
                         "Program kasir gym selesai."
                     );
@@ -210,7 +254,7 @@ public class Projekkasir {
                     );
             }
 
-        } while (pilihan != 7);
+        } while (pilihan != 9);
 
         input.close();
     }

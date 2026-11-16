@@ -8,7 +8,11 @@ package com.mycompany.projekkasir;
  *
  * @author RaynSaptra
  */
-public abstract class Kasir {
+import java.io.Serializable;
+
+public abstract class Kasir implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String id;
     private String nama;
